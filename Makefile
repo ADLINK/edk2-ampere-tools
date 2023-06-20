@@ -441,7 +441,7 @@ endif
 ifneq ($(wildcard $(PROGRAMMER_TOOL)),)
 ifneq ($(shell lsusb | grep 0483:),)
 	. $(POWER_SCRIPT) OFF
-	$(PROGRAMMER_TOOL) -u $(OUTPUT_IMAGE) -a 0x400000 -e -v
+	$(PROGRAMMER_TOOL) -u $(OUTPUT_IMAGE) -a 0x400000 -v
 	. $(POWER_SCRIPT) ON
 endif	
 endif	
