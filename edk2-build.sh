@@ -14,8 +14,8 @@ EFITOOLS_VER=1.8.1
 TOOLS_DIR="`dirname $0`"
 TOOLS_DIR="`readlink -f \"$TOOLS_DIR\"`"
 export TOOLS_DIR
-export PATH=$TOOLS_DIR/toolchain/iasl:$TOOLS_DIR/toolchain/atf-tools:$TOOLS_DIR/toolchain/efitools:$PATH
-export AMPERE_CROSS_COMPILE=aarch64-ampere-linux-gnu-
+export PATH=$TOOLS_DIR/toolchain/iasl:$TOOLS_DIR/toolchain/atf-tools:$PATH
+export AMPERE_CROSS_COMPILE=aarch64-linux-gnu-
 
 . "$TOOLS_DIR"/common-functions
 PLATFORM_CONFIG="-c $TOOLS_DIR/edk2-platforms.config"
@@ -72,7 +72,7 @@ function get_iasl_version
         PLATFORM_IASL_VER="20200110"
     fi
     echo $PLATFORM_IASL_VER
-}
+}Checking
 
 function build_dbu_auth_key
 {

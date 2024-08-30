@@ -32,18 +32,10 @@ WORK_LINUXBOOT_BIN := $(EDK2_PLATFORMS_SRC_DIR)/Platform/Ampere/LinuxBootPkg/AAr
 ATF_TOOLS_DIR := $(SCRIPTS_DIR)/toolchain/atf-tools
 IASL_DIR := $(SCRIPTS_DIR)/toolchain/iasl
 EFI_TOOLS_DIR := $(SCRIPTS_DIR)/toolchain/efitools
-COMPILER_DIR := $(SCRIPTS_DIR)/toolchain/ampere
-AARCH64_TOOLS_DIR := $(COMPILER_DIR)/bin
+
 
 # Compiler variables
 EDK2_GCC_TAG := GCC5
-AMPERE_COMPILER_PREFIX := aarch64-ampere-linux-gnu-
-ifneq ($(or $(shell $(CROSS_COMPILE)gcc -dumpmachine 2>/dev/null | grep -v ampere | grep aarch64), \
-           $(shell $(CROSS_COMPILE)gcc --version 2>/dev/null | grep Ampere | grep dynamic-nosysroot)),)
-	COMPILER := $(CROSS_COMPILE)
-else
-	COMPILER := $(AARCH64_TOOLS_DIR)/$(AMPERE_COMPILER_PREFIX)
-endif
 
 
 NUM_THREADS := $(shell echo $$(( $(shell getconf _NPROCESSORS_ONLN) + $(shell getconf _NPROCESSORS_ONLN))))
@@ -209,25 +201,8 @@ _check_tools:
 
 _check_compiler:
 	@echo "Checking compiler...OK"
-# Changes of commit "Remove auto downloading Ampere toolchain b6f7e223" >>>
-#ifeq ("$(shell uname -m)", "x86_64")
-#	$(if $(shell $(CROSS_COMPILE)gcc -dumpmachine | grep aarch64),,$(error "CROSS_COMPILE is invalid"))
-#endif
-
-#	@echo "---> $$($(CROSS_COMPILE)gcc -dumpmachine) $$($(CROSS_COMPILE)gcc -dumpversion)";
-# Changes of commit "Remove auto downloading Ampere toolchain b6f7e223" <<<
-
-#Keep the original auto-downloading mechanism >>>
-	$(eval COMPILER_NAME := ampere-8.3.0-20191025-dynamic-nosysroot-crosstools.tar.xz)
-	$(eval COMPILER_URL := https://cdn.amperecomputing.com/tools/compilers/cross/8.3.0/$(COMPILER_NAME))
-
-	@if [[ "$(COMPILER)" != $(AARCH64_TOOLS_DIR)*  || -f $(AARCH64_TOOLS_DIR)/$(AMPERE_COMPILER_PREFIX)gcc ]]; then \
-		echo $$($(COMPILER)gcc -dumpmachine) $$($(COMPILER)gcc -dumpversion); \
-	else \
-		echo -e "Not Found\nDownloading and setting Ampere compiler..."; \
-		rm -rf $(COMPILER_DIR) && mkdir -p $(COMPILER_DIR); \
-		wget -O - -q $(COMPILER_URL) --no-check-certificate | tar xJf - -C $(COMPILER_DIR) --strip-components=1 --checkpoint=.100; \
-	fi
+        
+	@echo "---> $$($(CROSS_COMPILE)gcc -dumpmachine) $$($(CROSS_COMPILE)gcc -dumpversion)";
 #Keep the original auto-downloading mechanism <<<
 _check_atf_tools:
 	@echo -n "Checking ATF Tools..."
